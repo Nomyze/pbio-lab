@@ -1,6 +1,3 @@
-# ORIGINAL
-#
-# MODIFIED (nie generowalem nic wiec napisalem calosc)
 from random import randint
 
 SYMBOLS = ['A', 'C', 'G', 'T']
@@ -8,7 +5,10 @@ SYMBOLS = ['A', 'C', 'G', 'T']
 
 # Procedura generuje losowa sekwencje dna i zwraca ja wraz z
 # liczba poszczegolnych nukleotydow
-def generate_sequence(seq_len: int):
+# ORIGINAL
+# def generate_sequence(seq_len: int):
+# MODIFIED (Czytelnosc kodu: dodanie typow zwrotnych)
+def generate_sequence(seq_len: int) -> (str, list):
     out = ""
     counts = [0, 0, 0, 0]
     for i in range(0, seq_len):
@@ -37,15 +37,24 @@ if __name__ == "__main__":
 
     # Zapis do pliku w formacie fasta
     with open(id + ".fasta", "w") as f:
-        f.write(">")
-        f.write(id + " ")
-        f.write(opis + "\n")
-        f.write(seq)
+        # ORIGINAL
+        # f.write(">")
+        # f.write(id + " ")
+        # f.write(opis + "\n")
+        # f.write(seq)
+        # MODIFIED (Zmiana w one-liner aby wykonywac mniej syscall'i)
+        f.write(">" + id + " " + opis + "\n" + seq)
     print("Sekwencja zostala zapisana do pliku " + id + ".fasta")
     # Output statystyk
     print("Statystyki sekwencji:")
-    print("A: {:.2f}%".format(counts[0]/seq_len * 100))
-    print("C: {:.2f}%".format(counts[1]/seq_len * 100))
-    print("G: {:.2f}%".format(counts[2]/seq_len * 100))
-    print("T: {:.2f}%".format(counts[3]/seq_len * 100))
+    # ORIGINAL
+    # print("A: {:.2f}%".format(counts[0]/seq_len * 100))
+    # print("C: {:.2f}%".format(counts[1]/seq_len * 100))
+    # print("G: {:.2f}%".format(counts[2]/seq_len * 100))
+    # print("T: {:.2f}%".format(counts[3]/seq_len * 100))
+    #   MODIFIED (Zmiana ilosc liczb po przecinku dla ladniejszego outputu)
+    print("A: {:.1f}%".format(counts[0]/seq_len * 100))
+    print("C: {:.1f}%".format(counts[1]/seq_len * 100))
+    print("G: {:.1f}%".format(counts[2]/seq_len * 100))
+    print("T: {:.1f}%".format(counts[3]/seq_len * 100))
     print("%CG: {:.2f}".format((counts[1]+counts[2])/seq_len * 100))
