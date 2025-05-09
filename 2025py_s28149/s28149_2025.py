@@ -1,8 +1,13 @@
+# ORIGINAL
+#
+# MODIFIED (nie generowalem nic wiec napisalem calosc)
 from random import randint
 
 SYMBOLS = ['A', 'C', 'G', 'T']
 
 
+# Procedura generuje losowa sekwencje dna i zwraca ja wraz z
+# liczba poszczegolnych nukleotydow
 def generate_sequence(seq_len: int):
     out = ""
     counts = [0, 0, 0, 0]
@@ -13,12 +18,15 @@ def generate_sequence(seq_len: int):
     return (out, counts)
 
 
+# Losuje pozycje i wstawia imie do sekwencji
 def insert_name(seq: str, name: str) -> str:
     i = randint(0, len(seq))
     return seq[:i] + name + seq[i:]
 
 
+# funkcja "main"
 if __name__ == "__main__":
+    # Input uzytkownika
     seq_len = int(input("Podaj dlugosc sekwencji: "))
     id = input("Podaj ID sekwencji: ")
     opis = input("Podaj opis sekwencji: ")
@@ -27,12 +35,14 @@ if __name__ == "__main__":
     seq = insert_name(seq, name)
     # print(seq)
 
+    # Zapis do pliku w formacie fasta
     with open(id + ".fasta", "w") as f:
         f.write(">")
         f.write(id + " ")
         f.write(opis + "\n")
         f.write(seq)
     print("Sekwencja zostala zapisana do pliku " + id + ".fasta")
+    # Output statystyk
     print("Statystyki sekwencji:")
     print("A: {:.2f}%".format(counts[0]/seq_len * 100))
     print("C: {:.2f}%".format(counts[1]/seq_len * 100))
