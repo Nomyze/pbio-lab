@@ -1,3 +1,5 @@
+# Program do generacji losowej sekwencji nukleotydow i zapisu do pliku fasta.
+# Dla zabawy dodaje do sekwencji podane imie.
 from random import randint
 
 SYMBOLS = ['A', 'C', 'G', 'T']
