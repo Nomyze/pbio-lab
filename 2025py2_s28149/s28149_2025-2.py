@@ -31,7 +31,6 @@ class NCBIRetriever:
 
             # Szukaj rekordów
             search_term = f"txid{taxid}[Organism] AND {min_seq}:{max_seq}[Sequence Length]"
-            print(search_term)
             handle = Entrez.esearch(db="nucleotide", term=search_term, usehistory="y")
             search_results = Entrez.read(handle)
             count = int(search_results["Count"])
@@ -76,7 +75,43 @@ class NCBIRetriever:
             # Surowy rekord GenBank
             records_text = handle.read()
 
+
             return records_text
+
+        except Exception as e:
+            print(f"Error fetching records: {e}")
+            return ""
+
+    def generate_csv(self, taxid, start=0, max_records=10):
+        if not hasattr(self, 'webenv') or not hasattr(self, 'query_key'):
+            print("No search results to fetch. Run search_taxid() first.")
+            return []
+        try:
+            # Limit, aby zapobiec przeciążeniu serwera
+            batch_size = min(max_records, 500)
+
+            handle = Entrez.efetch(
+                db="nucleotide",
+                retmode="xml",
+                retstart=start,
+                retmax=batch_size,
+                webenv=self.webenv,
+                query_key=self.query_key
+            )
+
+            # Surowy rekord GenBank
+            records = Entrez.parse(handle)
+
+            output_file = f"taxid_{taxid}.csv"
+            with open(output_file, "w") as f:
+                for record in records:
+                    defi = record["GBSeq_definition"]
+                    leng = record["GBSeq_length"]
+                    acces = record["GBSeq_primary-accession"]
+                    f.write(f"{acces};{leng};{defi};\n")
+            print(f"Wrote to file: {output_file}")
+
+            return records
 
         except Exception as e:
             print(f"Error fetching records: {e}")
@@ -106,6 +141,7 @@ def main():
     # Pobierz kilka pierwszych rekordów jako próbkę
     print("\nFetching sample records...")
     sample_records = retriever.fetch_records(start=0, max_records=5)
+    retriever.generate_csv(taxid)
 
     # Zapisz do pliku
     output_file = f"taxid_{taxid}_sample.gb"
