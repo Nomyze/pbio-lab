@@ -1,1 +1,3 @@
 *.fasta
+.venv
+venv/
